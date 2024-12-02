@@ -37,7 +37,7 @@ export function genericFragmentShader() {
         uniform sampler2D textureSource;
         void main()
         {
-                gl_FragColor = vec4(texture2D(textureSource, textureCoords).rgb, 1);
+                gl_FragColor = vec3(texture2D(textureSource, textureCoords),1);
         }
         `
 }
@@ -48,7 +48,8 @@ export function displayFragmentShader() {
         uniform sampler2D textureSource;
         void main()
         {
-                gl_FragColor = vec4(texture2D(textureSource, textureCoords).rbg, 1);
+                vec4 vp = texture2D(textureSource, textureCoords);
+                gl_FragColor = vec4(vp.x,vp.x/2.0,sqrt(vp.y),1);
         }
         `
 }
@@ -162,6 +163,7 @@ export function simulationFragmentShader() {
                 vec3 Div = (FVPXP - FVPXM) / dx2 + (FVPYP - FVPYM) / dy2;
 
                 float dF = params.g_F * VP.x * (1.0-params.s_I * VP.y) * (params.W / ( params.W + params.k_W))
+                         - params.s_F * VP.x * VP.y
                          - params.d_F * VP.x * VP.x * VP.y
                          + params.Diff_F * Div.x;
 

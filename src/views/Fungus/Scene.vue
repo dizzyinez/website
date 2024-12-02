@@ -117,7 +117,7 @@ let drawingHandler = (ev: DrawMouseEvent) => {
         const texSwap = ev.controlDown ? props.heightTextureSwap : props.simTextureSwap;
         brushUniforms.textureSource.value = texSwap[0].texture;
         brushUniforms.mask.value = new THREE.Vector4(1, 0, 0, 1);
-        brushUniforms.brushStrength.value = (ev.controlDown ? 0.01 : 0.05) * (ev.shiftDown ? -1 : 1);
+        brushUniforms.brushStrength.value = (ev.controlDown ? 0.01 : 0.07) * (ev.shiftDown ? -1 : 1);
         brushUniforms.brushSize.value = ev.controlDown ? 50 : 7;
         brushUniforms.scale.value = 200;
         brushUniforms.brushCoords.value = new THREE.Vector2(read[0], read[1]);
