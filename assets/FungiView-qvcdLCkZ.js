@@ -1,0 +1,1 @@
+import{_ as e,F as s}from"./FungiSim.vue_vue_type_script_setup_true_lang-BrTViKZx.js";import{d as r,o as n,b as o,u as m}from"./index-DRBi4EYd.js";const p=r({__name:"FungiView",setup(t){const a=new s;return(_,c)=>(n(),o(e,{fixedParams:m(a)},null,8,["fixedParams"]))}});export{p as default};
