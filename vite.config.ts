@@ -6,7 +6,7 @@ import { templateCompilerOptions } from '@tresjs/core'
 
 // https://vite.dev/config/
 export default defineConfig({
-        base: process.env.NODE_ENV === "production" ? "/REPO_NAME/" : "/",
+        // base: process.env.NODE_ENV === "production" ? "/REPO_NAME/" : "/",
         plugins: [
                 vue({
                         ...templateCompilerOptions
