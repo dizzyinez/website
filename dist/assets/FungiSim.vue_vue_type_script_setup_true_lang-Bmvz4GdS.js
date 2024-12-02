@@ -1,4 +1,4 @@
-var lm=Object.defineProperty;var cm=(s,e,t)=>e in s?lm(s,e,{enumerable:!0,configurable:!0,writable:!0,value:t}):s[e]=t;var zt=(s,e,t)=>cm(s,typeof e!="symbol"?e+"":e,t);import{g as hm,f as um,h as Rt,r as tt,i as un,j as Gc,k as Wc,n as dm,l as fm,p as pm,q as Ja,s as Ka,x as Pn,y as Ho,z as mm,A as gm,d as gr,B as _m,C as qn,D as Rs,o as _r,c as vc,E as vm,F as xm,G as Xa,H as ym,I as Yh,J as Vd,a as xc,K as Mm,e as Hd,L as Sm,b as bm}from"./index-DpDTGUm4.js";/**
+var lm=Object.defineProperty;var cm=(s,e,t)=>e in s?lm(s,e,{enumerable:!0,configurable:!0,writable:!0,value:t}):s[e]=t;var zt=(s,e,t)=>cm(s,typeof e!="symbol"?e+"":e,t);import{g as hm,f as um,h as Rt,r as tt,i as un,j as Gc,k as Wc,n as dm,l as fm,p as pm,q as Ja,s as Ka,x as Pn,y as Ho,z as mm,A as gm,d as gr,B as _m,C as qn,D as Rs,o as _r,c as vc,E as vm,F as xm,G as Xa,H as ym,I as Yh,J as Vd,a as xc,K as Mm,e as Hd,L as Sm,b as bm}from"./index-BVHeOpZ8.js";/**
  * @license
  * Copyright 2010-2024 Three.js Authors
  * SPDX-License-Identifier: MIT
@@ -3964,7 +3964,7 @@ void main() {
 
                 float dI = params.c_I * (params.d_F * VP.x * VP.x + params.s_F * VP.x * VP.y)
                          - params.k_I * VP.y
-                         - params.l_I * av_W
+                         - params.l_I * av_W * VP.y
                          // + params.Conv_I * (VP.y * Div.z + dot(vec2(FIX,FIY), vec2(FHX,FHY))) 
                          + params.Conv_I * dot(vec2(FIX,FIY), vec2(FHX,FHY));
                          + params.Diff_I * Div.y;

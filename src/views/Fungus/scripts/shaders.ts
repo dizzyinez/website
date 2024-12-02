@@ -169,7 +169,7 @@ export function simulationFragmentShader() {
 
                 float dI = params.c_I * (params.d_F * VP.x * VP.x + params.s_F * VP.x * VP.y)
                          - params.k_I * VP.y
-                         - params.l_I * av_W
+                         - params.l_I * av_W * VP.y
                          // + params.Conv_I * (VP.y * Div.z + dot(vec2(FIX,FIY), vec2(FHX,FHY))) 
                          + params.Conv_I * dot(vec2(FIX,FIY), vec2(FHX,FHY));
                          + params.Diff_I * Div.y;
