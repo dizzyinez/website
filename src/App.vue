@@ -5,23 +5,27 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 <template>
         <header>
-
+                <HelloWorld msg="Welcome to Inez's gay little website" />
                 <div class="wrapper">
-                        <HelloWorld msg="Welcome to Inez's gay little website" />
-                        <nav>
-                                <RouterLink to="/">Home</RouterLink>
-                                <RouterLink to="/about">About</RouterLink>
-                                <!-- <RouterLink to="/test">Test</RouterLink> -->
-                                <RouterLink to="/fungi">Fungi</RouterLink>
-                        </nav>
                 </div>
+                <nav>
+                        <RouterLink to="/">Home</RouterLink>
+                        <RouterLink to="/about">About</RouterLink>
+                        <!-- <RouterLink to="/test">Test</RouterLink> -->
+                        <RouterLink to="/fungi">Fungi</RouterLink>
+                </nav>
         </header>
-
-        <RouterView />
+        <br />
+        <RouterView/>
 </template>
 
 <style scoped>
+:root {
+        flex: 1;
+}
+
 header {
+        display: block;
         line-height: 1.5;
         max-height: 100vh;
 }
@@ -56,9 +60,10 @@ nav a:first-of-type {
         border: 0;
 }
 
+/*
 @media (min-width: 1024px) {
         header {
-                display: flex;
+                display: block;
                 place-items: center;
                 padding-right: calc(var(--section-gap) / 2);
         }
@@ -82,4 +87,5 @@ nav a:first-of-type {
                 margin-top: 1rem;
         }
 }
+*/
 </style>

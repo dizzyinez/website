@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { TresCanvas } from '@tresjs/core'
 import * as THREE from 'three'
-import OrbitControls from './OrbitControls.vue';
 import Simulation from './Simulation.vue';
+import { FixedParams } from './scripts/FixedParams';
 
+let props = defineProps({
+        fixedParams: {type: FixedParams, default: new FixedParams()},
+});
 
 let renderer = new THREE.WebGLRenderer({
         preserveDrawingBuffer: true,
@@ -20,6 +23,6 @@ let renderer = new THREE.WebGLRenderer({
 <template>
         <TresCanvas :renderer="renderer"> 
         <TresPerspectiveCamera :position="[1,1,1]"/>
-                <Simulation />
+                <Simulation :fixedParams="props.fixedParams"/>
         </TresCanvas>
 </template>
