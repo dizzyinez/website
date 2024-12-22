@@ -9,6 +9,8 @@ import { FixedParams } from './scripts/FixedParams';
 let props = defineProps({
         gridSize: {type: Number, default: 128},
         fixedParams: {type: FixedParams, default: new FixedParams()},
+        numShrooms: {type: Number, default: 512},
+        scale: { type: Number, default: 200 },
 });
 
 let tresContext = useTresContext();
@@ -24,7 +26,7 @@ let simUniforms = {
         heightMap: { value: new THREE.Texture },
         NX: { value: props.gridSize },
         NY: { value: props.gridSize },
-        scale: { value: 200 },
+        scale: { value: props.scale },
         params: { value: props.fixedParams },
 };
 
@@ -68,6 +70,7 @@ heightTextureSwap.push(heightTextureSwap[0].clone());
 heightTextureSwap.forEach((tex) => {
         tex.texture.wrapS = THREE.ClampToEdgeWrapping;
         tex.texture.wrapT = THREE.ClampToEdgeWrapping;
+        tex.texture.minFilter = THREE.LinearFilter;
 });
 
 const { onBeforeRender, render } = useLoop();
@@ -94,5 +97,5 @@ render(({ renderer, scene, camera }) => {
 </script>
 
 <template>
-        <Scene :heightTextureSwap="heightTextureSwap" :simTextureSwap="simTextureSwap" :gridSize="props.gridSize"/>
+        <Scene :heightTextureSwap="heightTextureSwap" :simTextureSwap="simTextureSwap" :gridSize="gridSize" :numShrooms="numShrooms" :scale="props.scale"/>
 </template>

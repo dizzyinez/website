@@ -2,48 +2,140 @@
 import { extend, useLoop, useTresContext } from '@tresjs/core'
 import { inject } from 'vue'
 import * as THREE from 'three'
-import { brushFragmentShader, displayFragmentShader, genericFragmentShader, genericVertexShader, heightMapVertexShader, uvFragmentShader } from './scripts/shaders';
+import { brushFragmentShader, displayFragmentShader, genericFragmentShader, genericVertexShader, heightMapStandardVertexShader, heightMapVertexShader, mushroomFragmentShader, mushroomVertexShader, uvFragmentShader } from './scripts/shaders';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { halton } from './scripts/Halton';
 
 extend({ OrbitControls })
 let props = defineProps({
         heightTextureSwap: { type: Array<THREE.WebGLRenderTarget<THREE.Texture>>, required: true },
         simTextureSwap: { type: Array<THREE.WebGLRenderTarget<THREE.Texture>>, required: true },
         gridSize: { type: Number, required: true },
+        numShrooms: { type: Number, default: 512 },
+        scale: { type: Number, default: 200 },
 });
-
-//i should probably use props but typescript is annoying and i don't know how to use it fully so whatever
-//let heightTexture = inject<THREE.WebGLRenderTarget<THREE.Texture>>('heightTexture') as THREE.WebGLRenderTarget<THREE.Texture>;
 
 const { camera, renderer, scene } = useTresContext();
 
-let displayUniforms = {
-        dt: { value: 0.1, },
-        textureSource: { value: new THREE.Texture },
-        //heightTexture: { value: heightTexture.texture },
-        //heightTexture: { value: new THREE.Texture },
-        heightMap: { value: props.heightTextureSwap[0].texture },
+
+let displayMaterial = new THREE.MeshStandardMaterial();
+displayMaterial.roughness = 0.8;
+displayMaterial.color = new THREE.Color(0.5,1,0.5);
+displayMaterial.side = THREE.DoubleSide;
+displayMaterial.shadowSide = THREE.DoubleSide;
+
+let displayGeometry = new THREE.PlaneGeometry(1, 1, props.gridSize, props.gridSize);
+displayGeometry.rotateX(-Math.PI / 2);
+displayGeometry.computeVertexNormals();
+
+let displayMesh = new THREE.Mesh(displayGeometry, displayMaterial);
+displayMesh.position.y = -0.1;
+displayMesh.receiveShadow = true;
+displayMesh.castShadow = true;
+scene.value.add(displayMesh);
+
+let mushroomMaterial = new THREE.MeshStandardMaterial();
+let mushroomShader: THREE.WebGLProgramParametersWithUniforms;
+let mushroomDepthShader: THREE.WebGLProgramParametersWithUniforms;
+mushroomMaterial.roughness = 0.2;
+mushroomMaterial.shadowSide = THREE.DoubleSide;
+let applyMushroomVertexInserts = (shader: THREE.WebGLProgramParametersWithUniforms) => {
+        shader.uniforms.heightMap = { value: null };
+        shader.uniforms.varyingParams = { value: null };
+
+        let token = '#include <common>'
+        let insert = /*glsl*/`
+        uniform sampler2D heightMap;
+        uniform sampler2D varyingParams;
+        uniform float numShrooms;
+        //uniform sampler2D mushroomPoints;
+        `
+        shader.vertexShader = shader.vertexShader.replace(token, token + insert);
+
+        token = '#include <begin_vertex>'
+        insert = /* glsl */`
+        vec2 point = vec2(0.5,0.5);
+        #ifdef USE_INSTANCING
+                point = vec4( instanceMatrix * vec4(0., 0. , 0., 1.) ).xz;
+                point += vec2(0.5, 0.5);
+                point.y = 1. - point.y;
+        #endif
+        float height = texture2D(heightMap, point).r;
+        float fungi = texture2D(varyingParams, point).r;
+        float scale = 1.;
+        if (fungi < 0.09) { fungi = 0.; scale = 0.;};
+
+        transformed *= vec3(scale,fungi,scale);
+        transformed += vec3(0,height,0);
+        `
+        shader.vertexShader = shader.vertexShader.replace(token, token + insert);
+}
+mushroomMaterial.onBeforeCompile = (shader) => {
+        applyMushroomVertexInserts(shader);
+        mushroomShader = shader;
+}
+
+let mushroomDepthMaterial = new THREE.MeshDepthMaterial();
+mushroomDepthMaterial.depthPacking = THREE.RGBADepthPacking;
+mushroomDepthMaterial.onBeforeCompile = (shader) => {
+        applyMushroomVertexInserts(shader);
+        mushroomDepthShader = shader;
+        console.log(shader.vertexShader);
 };
 
-let displayMaterial = new THREE.ShaderMaterial({
-        uniforms: displayUniforms,
-        vertexShader: heightMapVertexShader(),
-        fragmentShader: displayFragmentShader(),
-        transparent: true,
-        side: THREE.DoubleSide,
-});
+let mushroomGeometry = new THREE.CylinderGeometry(0.005, 0.008, 0.1, 8);
+mushroomGeometry.translate(0, 0.05, 0);
+
+let mushroomMesh = new THREE.InstancedMesh(mushroomGeometry, mushroomMaterial, props.numShrooms);
+mushroomMesh.position.y = -0.1;
+mushroomMesh.receiveShadow = true;
+mushroomMesh.castShadow = true;
+mushroomMesh.customDepthMaterial = mushroomDepthMaterial;
+const dummy = new THREE.Object3D();
+const halton2 = halton(2);
+const halton3 = halton(3);
+for (let i = 0; i < props.numShrooms; i++) {
+        dummy.position.x = halton2.next().value - 0.5;
+        dummy.position.z = halton3.next().value - 0.5;
+        dummy.updateMatrix();
+        mushroomMesh.setMatrixAt(i, dummy.matrix);
+}
+mushroomMesh.instanceMatrix.needsUpdate = true;
+mushroomMesh.computeBoundingSphere();
+mushroomMesh.frustumCulled = false;
+console.log(props.numShrooms);
+console.log(mushroomMesh.count);
+scene.value.add(mushroomMesh);
+//mushroomMesh.instanceMatrix.setUsage(THREE.StaticReadUsage);
+
+let light = new THREE.DirectionalLight(0xffffff, 0.5);
+light.position.set(0, 1, -1);
+light.castShadow = true;
+light.shadow.camera.left = -0.5;
+light.shadow.camera.right = 0.5;
+light.shadow.camera.bottom = -0.5;
+light.shadow.camera.top = 0.5;
+light.shadow.radius = 2;
+light.shadow.bias = -0.001;
+light.shadow.mapSize.width = 2048;
+light.shadow.mapSize.height = 2048;
+light.shadow.camera.visible = true;
+light.shadow.camera.far = 5;
+scene.value.add(light);
+//scene.value.add(new THREE.DirectionalLightHelper(light, 1));
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+scene.value.add(ambientLight)
 
 
-let displayMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, props.gridSize, props.gridSize), displayMaterial);
-displayMesh.rotateX(-Math.PI / 2);
-displayMesh.position.y = -0.2;
-scene.value.add(displayMesh);
 
 ///// DRAWING
 
+let mousePickUniforms = { heightMap: { value: props.heightTextureSwap[0].texture } };
+
 //mouse picking
 let mousePickMaterial = new THREE.ShaderMaterial({
-        uniforms: displayUniforms,
+        uniforms: mousePickUniforms,
         vertexShader: heightMapVertexShader(),
         fragmentShader: uvFragmentShader(),
         transparent: true,
@@ -52,7 +144,7 @@ let mousePickMaterial = new THREE.ShaderMaterial({
 
 let mousePickMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, props.gridSize, props.gridSize), mousePickMaterial);
 mousePickMesh.rotateX(-Math.PI / 2);
-mousePickMesh.position.y = -0.2;
+mousePickMesh.position.y = -0.1;
 
 let mousePickScene = new THREE.Scene();
 mousePickScene.add(mousePickMesh);
@@ -63,7 +155,7 @@ let brushUniforms = {
         textureSource: { value: new THREE.Texture },
         brushSize: { value: 1 },
         brushStrength: { value: 0.1 },
-        scale: { value: 1 },
+        scale: { value: props.scale },
         max: { value: 1 },
         min: { value: 0 },
         mask: { value: new THREE.Vector4(1, 1, 1, 1) },
@@ -118,8 +210,8 @@ let drawingHandler = (ev: DrawMouseEvent) => {
         brushUniforms.textureSource.value = texSwap[0].texture;
         brushUniforms.mask.value = new THREE.Vector4(1, 0, 0, 1);
         brushUniforms.brushStrength.value = (ev.controlDown ? 0.01 : 0.07) * (ev.shiftDown ? -1 : 1);
-        brushUniforms.brushSize.value = ev.controlDown ? 50 : 7;
-        brushUniforms.scale.value = 200;
+        brushUniforms.brushSize.value = ev.controlDown ? 15 : 1;
+        brushUniforms.scale.value = props.scale;
         brushUniforms.brushCoords.value = new THREE.Vector2(read[0], read[1]);
         renderer.value.setRenderTarget(texSwap[1]);
         renderer.value.render(brushScene, brushCamera);
@@ -153,16 +245,24 @@ renderer.value.domElement.addEventListener("mouseup", (ev: MouseEvent) => { draw
 const { onBeforeRender } = useLoop();
 onBeforeRender(({ delta }) => {
         drawingHandler(drawMouseEvent);
-        displayUniforms.heightMap.value = props.heightTextureSwap[0].texture;
-        displayUniforms.textureSource.value = props.simTextureSwap[1].texture;
+        displayMaterial.displacementMap = props.heightTextureSwap[0].texture;
+        //displayMaterial.map = props.simTextureSwap[0].texture;
+        displayMaterial.bumpMap = props.heightTextureSwap[0].texture;
+        if (mushroomShader) mushroomShader.uniforms["heightMap"].value = props.heightTextureSwap[1].texture;
+        if (mushroomShader) mushroomShader.uniforms["varyingParams"].value = props.simTextureSwap[1].texture;
+        if (mushroomDepthShader) mushroomDepthShader.uniforms["heightMap"].value = props.heightTextureSwap[1].texture;
+        if (mushroomDepthShader) mushroomDepthShader.uniforms["varyingParams"].value = props.simTextureSwap[1].texture;
+        //displayUniforms.heightMap = {value: props.heightTextureSwap[0].texture};
+        //displayUniforms.textureSource.value = props.simTextureSwap[1].texture;
 });
 
+//         <primitive receive-shadow :object="displayMesh" />
+// <TresAmbientLight :intensity="0.0" />
+// <TresDirectionalLight cast-shadow :position="[0, 2, 1]" :intensity="1" />
 </script>
 
 <template>
-        <primitive :object="displayMesh" />
-        <TresAmbientLight :intensity="1" />
-        <TresOrbitControls v-if="renderer" :args="[camera, renderer?.domElement]" :target="[0,0,0]" :zoomSpeed="2" :zoom0="0.1"
-                :rotateSpeed="0.5" :maxPolarAngle="Math.PI / 2" :enablePan="false"
+        <TresOrbitControls v-if="renderer" :args="[camera, renderer?.domElement]" :target="[0, 0, 0]" :zoomSpeed="2"
+                :zoom0="0.1" :rotateSpeed="0.5" :maxPolarAngle="Math.PI / 2" :enablePan="false"
                 :mouseButtons="{ MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.ROTATE }" />
 </template>

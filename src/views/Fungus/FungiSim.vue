@@ -5,25 +5,29 @@ import Simulation from './Simulation.vue';
 import { FixedParams } from './scripts/FixedParams';
 
 let props = defineProps({
-        gridSize: {type: Number, default: 128},
-        fixedParams: {type: FixedParams, default: new FixedParams()},
+        gridSize: { type: Number, default: 128 },
+        fixedParams: { type: FixedParams, default: new FixedParams() },
+        numShrooms: { type: Number, default: 512 },
+        scale: { type: Number, default: 200 },
 });
 
-let renderer = new THREE.WebGLRenderer({
-        preserveDrawingBuffer: true,
-        powerPreference: "high-performance",
-        antialias: false,
-        alpha: true,
-        premultipliedAlpha: false,
-        stencil: false,
-});
+//let renderer = new THREE.WebGLRenderer({
+//        preserveDrawingBuffer: true,
+//        powerPreference: "high-performance",
+//        antialias: true,
+//        alpha: true,
+//        premultipliedAlpha: false,
+//        stencil: false,
+//});
+//renderer.shadowMap.enabled = true;
+//renderer.setClearColor(new THREE.Color(0, 0, 0), 1);
 
-//renderer.autoClear = false;
 </script>
 
 <template>
-        <TresCanvas :renderer="renderer"> 
-        <TresPerspectiveCamera :position="[1,1,1]"/>
-                <Simulation :fixedParams="props.fixedParams" :gridSize="gridSize"/>
+        <TresCanvas :shadows=true :stencil=false :premultipliedAlpha=false powerPreference="high-performance"
+                :antialias=true>
+                <TresPerspectiveCamera :position="[1, 1, 1]" />
+                <Simulation :fixedParams="props.fixedParams" :gridSize="gridSize" :numShrooms="numShrooms" :scale="props.scale"/>
         </TresCanvas>
 </template>

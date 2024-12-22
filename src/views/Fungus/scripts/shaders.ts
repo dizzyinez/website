@@ -9,8 +9,60 @@ export function genericVertexShader() {
         `
 }
 
+export function heightMapStandardVertexShader() {
+        return `
+        uniform sampler2D heightMap;
+        #define STANDARD
+        varying vec3 vViewPosition;
+        #ifdef USE_TRANSMISSION
+        	varying vec3 vWorldPosition;
+        #endif
+        #include <common>
+        #include <batching_pars_vertex>
+        #include <uv_pars_vertex>
+        #include <displacementmap_pars_vertex>
+        #include <color_pars_vertex>
+        #include <fog_pars_vertex>
+        #include <normal_pars_vertex>
+        #include <morphtarget_pars_vertex>
+        #include <skinning_pars_vertex>
+        #include <shadowmap_pars_vertex>
+        #include <logdepthbuf_pars_vertex>
+        #include <clipping_planes_pars_vertex>
+        void main() {
+        	#include <uv_vertex>
+        	#include <color_vertex>
+        	#include <morphinstance_vertex>
+        	#include <morphcolor_vertex>
+        	#include <batching_vertex>
+        	#include <beginnormal_vertex>
+        	#include <morphnormal_vertex>
+        	#include <skinbase_vertex>
+        	#include <skinnormal_vertex>
+        	#include <defaultnormal_vertex>
+        	#include <normal_vertex>
+        	#include <begin_vertex>
+                transformed.z += texture2D(heightMap, uv).r;
+        	#include <morphtarget_vertex>
+        	#include <skinning_vertex>
+        	#include <displacementmap_vertex>
+        	#include <project_vertex>
+        	#include <logdepthbuf_vertex>
+        	#include <clipping_planes_vertex>
+        	vViewPosition = - mvPosition.xyz;
+        	#include <worldpos_vertex>
+        	#include <shadowmap_vertex>
+        	#include <fog_vertex>
+        #ifdef USE_TRANSMISSION
+        	vWorldPosition = worldPosition.xyz;
+        #endif
+        }
+        `
+}
+
 export function heightMapVertexShader() {
         return `
+
         varying vec2 textureCoords;
         uniform sampler2D heightMap;
         void main()
@@ -20,6 +72,8 @@ export function heightMapVertexShader() {
         }
         `
 }
+
+
 
 export function uvFragmentShader() {
         return `
@@ -139,11 +193,6 @@ export function simulationFragmentShader() {
                 float dyp = sqrt(dv * dv * scale * scale + (HYP-H)*(HYP-H));
                 float dym = sqrt(dv * dv * scale * scale + (HYM-H)*(HYM-H));
 
-                //float dxp = du * scale;
-                //float dxm = du * scale;
-                //float dyp = dv * scale;
-                //float dym = dv * scale;
-
                 float dx2 = 0.5 * (dxp + dxm);
                 float dy2 = 0.5 * (dyp + dym);
 
@@ -181,6 +230,30 @@ export function simulationFragmentShader() {
                 new_VP = clamp(new_VP, 0.0, 1.0);
 
                 gl_FragColor = vec4(new_VP, 0, 1);
+        }
+        `
+}
+
+export function mushroomVertexShader() {
+        return `
+        #define MAX_SHROOMS 16384
+        varying vec2 textureCoords;
+        uniform sampler2D heightMap;
+        uniform vec2 points[MAX_SHROOMS];
+
+        void main()
+        {
+                textureCoords = uv;
+                gl_Position = projectionMatrix * (modelViewMatrix * vec4(position + vec3(0,0,texture2D(heightMap, uv).r), 1.0));
+        }
+        `
+}
+
+export function mushroomFragmentShader() {
+        return `
+        void main()
+        {
+                gl_FragColor = vec4(1);
         }
         `
 }

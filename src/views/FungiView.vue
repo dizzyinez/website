@@ -5,7 +5,6 @@ import { FixedParams } from './Fungus/scripts/FixedParams';
 import { ref } from 'vue';
 
 const params = ref(new FixedParams());
-const v = ref(1.0);
 
 </script>
 
@@ -34,7 +33,7 @@ const v = ref(1.0);
                         <Slider name="Soil Water parameter b" v-model="params.b" :min="0" :max="9" :step="1" />
                 </div>
                 <div class="canvas">
-                        <FungiSim :fixedParams="params" :gridSize="256" />
+                        <FungiSim :fixedParams="params" :gridSize="128" :scale="50" :numShrooms="128"/>
                 </div>
         </div>
 </template>

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "deploy": "cd dist && cp index.html 404.html && cd ..",
+    "deploy": "cd dist && cp index.html 404.html && rm -f CNAME && echo dizzyinez.net > CNAME && cd ..",
     "push": "git subtree push --prefix dist origin gh-pages",
     "preview": "vite preview",
     "build-only": "vite build",
