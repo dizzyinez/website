@@ -5,15 +5,15 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 <template>
         <header>
-                <HelloWorld msg="Welcome to Inez's gay little website" />
+                <!-- <HelloWorld msg="Welcome to Inez's gay little website" /> -->
                 <div class="wrapper">
-                </div>
                 <nav>
                         <RouterLink to="/">Home</RouterLink>
-                        <RouterLink to="/about">About</RouterLink>
+                        <RouterLink to="/blog">Blog</RouterLink>
                         <!-- <RouterLink to="/test">Test</RouterLink> -->
                         <RouterLink to="/fungi">Fungi</RouterLink>
                 </nav>
+                </div>
         </header>
         <br />
         <RouterView/>
@@ -37,9 +37,9 @@ header {
 
 nav {
         width: 100%;
-        font-size: 12px;
-        text-align: center;
-        margin-top: 2rem;
+        font-size: 16px;
+        text-align: right;
+        margin-top: 0.5rem; 
 }
 
 nav a.router-link-exact-active {

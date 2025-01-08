@@ -11,11 +11,12 @@ const params = ref(new FixedParams());
 <template>
         <div class="fungi">
                 <div>
-                        <p> Left Click: Draw fungi </p>
+                        <p> Left Click: Draw fungal mycelia </p>
                         <p> CTRL + Left Click: Draw Terrain </p>
-                        <p> SHFT: invert brush </p>
+                        <p> SHIFT: Invert brush </p>
                         <p> Right Click: Rotate </p>
                         <p> Scroll Wheel: Zoom </p>
+                        <p> Yes I know the mouse is offset <br> on some browsers sorry about <br> that, will fix it soon! </p>
                         <br/>
                         <Slider name="Sensitivity of F growth to I" v-model="params.s_I" :min="0" :max="1" :step="0.05" />
                         <Slider name="Half Saturation constant for W" v-model="params.k_W" :min="0" :max="0.5" :step="0.05" />
