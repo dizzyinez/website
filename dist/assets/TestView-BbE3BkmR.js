@@ -1,1 +1,0 @@
-import{_ as e}from"./FungiSim.vue_vue_type_script_setup_true_lang-3QeDS4sf.js";import{d as o,o as t,f as a}from"./index-CJ3VihD0.js";const m=o({__name:"TestView",setup(r){return(s,_)=>(t(),a(e))}});export{m as default};

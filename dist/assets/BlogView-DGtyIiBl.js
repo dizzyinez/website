@@ -1,1 +1,0 @@
-import{_ as o,c as t,a,o as n}from"./index-CJ3VihD0.js";const s={},r={class:"blog"};function i(l,e){return n(),t("div",r,e[0]||(e[0]=[a("h1",null,"Nothing here yet! Will post an article about the fungal fairy ring simulation here soon (and also update the app to fix bugs and make it much more user-friendly).",-1)]))}const u=o(s,[["render",i]]);export{u as default};

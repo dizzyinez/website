@@ -1,44 +1,23 @@
 {
-  "name": "website",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
+  "name": "dizzyinez.net",
+  "devDependencies": {
+    "eslint": "^9.18.0",
+    "markdown-it-mathjax3": "^4.3.2",
+    "vite-plugin-eslint": "^1.8.1",
+    "vitepress": "^1.5.0"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "deploy": "cd dist && cp index.html 404.html && rm -f CNAME && echo dizzyinez.net > CNAME && cd ..",
-    "push": "git subtree push --prefix dist origin gh-pages",
-    "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
   },
   "dependencies": {
-    "@tresjs/core": "^4.3.1",
-    "pinia": "^2.2.4",
-    "three": "^0.170.0",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "@vue/eslint-config-typescript": "^14.3.0",
+    "eslint-plugin-markdownlint": "^0.6.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "vitepress-plugin-auto-sidebar": "^1.2.0"
   },
-  "devDependencies": {
-    "@tsconfig/node20": "^20.1.4",
-    "@types/node": "^20.17.0",
-    "@types/three": "^0.170.0",
-    "@vitejs/plugin-vue": "^5.1.4",
-    "@vue/eslint-config-prettier": "^10.0.0",
-    "@vue/eslint-config-typescript": "^14.1.1",
-    "@vue/language-server": "^2.1.10",
-    "@vue/tsconfig": "^0.5.1",
-    "@vue/typescript-plugin": "^2.1.10",
-    "eslint": "^9.13.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-vue": "^9.29.0",
-    "npm-run-all2": "^7.0.1",
-    "prettier": "3.3.3",
-    "typescript": "~5.6.0",
-    "vite": "^5.4.10",
-    "vue-tsc": "^2.1.6"
+  "bin": {
+    "new": "./.bin/new.js"
   }
 }
