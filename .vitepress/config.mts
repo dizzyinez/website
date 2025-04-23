@@ -10,15 +10,18 @@ export default defineConfig({
                 // https://vitepress.dev/reference/default-theme-config
                 nav: [
                         { text: 'Home', link: '/' },
-                        { text: 'Blog', link: '/blog/favorite-albums-of-2024' },
+                        { text: 'Blog', link: '/blog/' },
                         { text: 'Doohickies', link: '/doohickies/pin-printouts' },
                 ],
                 //outline: false,
 
-                sidebar: getSidebar({ contentRoot: '/', contentDirs: ['blog'], collapsed: false, collapsible: false, useFrontmatter: true, ignoreIndexItem: true}),
+                sidebar: {
+                        '/blog/': getSidebar({ contentRoot: '/', contentDirs: ['blog'], collapsed: false, collapsible: false, useFrontmatter: true, ignoreIndexItem: true}),
+                        '/doohickies/': getSidebar({ contentRoot: '/', contentDirs: ['doohickies'], collapsed: false, collapsible: false, useFrontmatter: true, ignoreIndexItem: true}),
+                },
 
                 socialLinks: [
-                        { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+                        { icon: 'github', link: 'https://github.com/dizzyinez' }
                 ]
         },
         markdown: {

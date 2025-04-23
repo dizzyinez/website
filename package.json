@@ -4,7 +4,7 @@
     "eslint": "^9.18.0",
     "markdown-it-mathjax3": "^4.3.2",
     "vite-plugin-eslint": "^1.8.1",
-    "vitepress": "^0.1.1"
+    "vitepress": "^1.6.3"
   },
   "scripts": {
     "dev": "vitepress dev",
