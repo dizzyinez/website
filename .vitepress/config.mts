@@ -10,7 +10,8 @@ export default defineConfig({
                 // https://vitepress.dev/reference/default-theme-config
                 nav: [
                         { text: 'Home', link: '/' },
-                        { text: 'Blog', link: '/blog/favorie-albums-of-2024' },
+                        { text: 'Blog', link: '/blog/favorite-albums-of-2024' },
+                        { text: 'Doohickies', link: '/doohickies/pin-printouts' },
                 ],
                 //outline: false,
 

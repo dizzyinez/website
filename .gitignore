@@ -3,7 +3,7 @@ logs
 *.log
 npm-debug.log*
 
-node_modules/
+node_modules/*
 
 dits/
 
@@ -11,7 +11,7 @@ typings/
 
 .npm/
 
-.eslintcache/
+.eslintcache
 
 .vitepress/dist/
 .vitepress/cache/
