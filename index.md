@@ -4,4 +4,4 @@ layout: home
 ---
 
 ![Inez swagged up on a mountain](/MountainClose.jpg)
-howdy! i'm inez (she/her) and i like math and music and lots more!
+howdy! i'm inez (she/it) and i like math and music and lots more!
