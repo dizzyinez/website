@@ -10,7 +10,7 @@ export default defineConfig({
                 // https://vitepress.dev/reference/default-theme-config
                 nav: [
                         { text: 'Home', link: '/' },
-                        { text: 'Blog', link: '/blog/' },
+                        { text: 'Blog', link: '/blog/math-isnt-real-may-2025' },
                         { text: 'Doohickies', link: '/doohickies/pin-printouts' },
                 ],
                 //outline: false,
@@ -32,17 +32,17 @@ export default defineConfig({
                         label: 'English',
                         lang: 'en'
                 },
-                jp: {
-                        label: '日本語',
-                        lang: 'jp',
-                        title: 'イネーズの小さいサイト',
-                        themeConfig: {
-                                nav: [
-                                        { text: 'ホーム', link: '/jp/' },
-                                        { text: 'ブログ', link: '/jp/blog/' },
-                                ],
-                        }
-                },
+                //jp: {
+                //        label: '日本語',
+                //        lang: 'jp',
+                //        title: 'イネーズの小さいサイト',
+                //        themeConfig: {
+                //                nav: [
+                //                        { text: 'ホーム', link: '/jp/' },
+                //                        { text: 'ブログ', link: '/jp/blog/' },
+                //                ],
+                //        }
+                //},
         },
         //plugins: [eslint()],
 })
